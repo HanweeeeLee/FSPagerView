@@ -61,12 +61,16 @@ extension Reactive where Base == FSPagerView {
             }
             return items
           }()
-          if items.count == 0 {
-            base.numberOfItems = 0
-          } else if items.count == 1 {
-            base.numberOfItems = 1
+          if base.isInfinite {
+            if items.count == 0 {
+              base.numberOfItems = 0
+            } else if items.count == 1 {
+              base.numberOfItems = 1
+            } else {
+              base.numberOfItems = Int(items.count - 2)
+            }
           } else {
-            base.numberOfItems = Int(items.count - 2)
+            base.numberOfItems = items.count
           }
           return items
         }
