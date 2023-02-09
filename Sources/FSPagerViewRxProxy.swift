@@ -7,6 +7,7 @@
 
 import RxSwift
 import RxCocoa
+import Foundation
 
 public extension Reactive where Base: FSPagerView {
   
