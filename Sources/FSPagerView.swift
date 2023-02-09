@@ -214,7 +214,8 @@ open class FSPagerView: UIView,UICollectionViewDataSource,UICollectionViewDelega
         return self.collectionView.panGestureRecognizer
     }
     
-    @objc open fileprivate(set) dynamic var currentIndex: Int = 0
+//    @objc open fileprivate(set) dynamic var currentIndex: Int = 0
+    @objc open dynamic var currentIndex: Int = 0
     
     // MARK: - Private properties
     
@@ -425,12 +426,36 @@ open class FSPagerView: UIView,UICollectionViewDataSource,UICollectionViewDelega
     }
     
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if let function = self.delegate?.pagerViewDidEndDecelerating {
-            function(self)
-        }
+      if self.currentIndex == 0 {
+        self.scrollToItem(at: self.numberOfItems - 4, animated: false)
+      }
+      if self.currentIndex == 1 {
+        self.scrollToItem(at: self.numberOfItems - 3, animated: false)
+      }
+      if self.currentIndex == self.numberOfItems - 2 {
+        self.scrollToItem(at: 2, animated: false)
+      }
+      if self.currentIndex == self.numberOfItems - 1 {
+        self.scrollToItem(at: 3, animated: false)
+      }
+      if let function = self.delegate?.pagerViewDidEndDecelerating {
+        function(self)
+      }
     }
     
     public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+      if self.currentIndex == 0 {
+        self.scrollToItem(at: self.numberOfItems - 4, animated: false)
+      }
+      if self.currentIndex == 1 {
+        self.scrollToItem(at: self.numberOfItems - 3, animated: false)
+      }
+      if self.currentIndex == self.numberOfItems - 2 {
+        self.scrollToItem(at: 2, animated: false)
+      }
+      if self.currentIndex == self.numberOfItems - 1 {
+        self.scrollToItem(at: 3, animated: false)
+      }
         if let function = self.delegate?.pagerViewDidEndScrollAnimation {
             function(self)
         }
