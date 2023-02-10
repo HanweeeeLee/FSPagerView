@@ -11,6 +11,8 @@
 //
 
 import UIKit
+import RxCocoa
+import RxSwift
 
 @objc
 public protocol FSPagerViewDataSource: NSObjectProtocol {
@@ -658,4 +660,41 @@ extension FSPagerView {
     /// Requests that FSPagerView use the default value for a given size.
     public static let automaticSize: CGSize = .zero
     
+}
+
+class FSPagerViewDelegateProxy: DelegateProxy<FSPagerView, FSPagerViewDelegate>, DelegateProxyType, FSPagerViewDelegate {
+  
+  static func registerKnownImplementations() {
+    self.register { (viewController) -> FSPagerViewDelegateProxy in
+      FSPagerViewDelegateProxy(parentObject: viewController, delegateProxy: self)
+    }
+  }
+  
+  static func currentDelegate(for object: FSPagerView) -> FSPagerViewDelegate? {
+    return object.delegate
+  }
+  
+  static func setCurrentDelegate(_ delegate: FSPagerViewDelegate?, to object: FSPagerView) {
+    object.delegate = delegate
+  }
+  
+}
+
+extension Reactive where Base == FSPagerView {
+  
+  var delegate: DelegateProxy<FSPagerView, FSPagerViewDelegate> {
+    return FSPagerViewDelegateProxy.proxy(for: self.base)
+  }
+  
+  public var didSelected: Observable<IndexPath> {
+    return delegate.methodInvoked(#selector(FSPagerViewDelegate.pagerView(_:didSelectItemAt:)))
+      .map { param in
+        if let item = param[1] as? Int {
+          return .init(item: item - 2, section: 0)
+        } else {
+          return .init(item: 0, section: 0)
+        }
+      }
+  }
+  
 }
